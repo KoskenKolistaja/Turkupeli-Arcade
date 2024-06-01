@@ -50,6 +50,7 @@ func check_game_over():
 
 func game_over():
 	$game_over.show()
+	$game_over/Button.grab_focus()     
 	dead = true
 	$AudioStreamPlayer.stop()
 	$AudioStreamPlayer2.stop()
