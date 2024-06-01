@@ -1,0 +1,114 @@
+[gd_scene load_steps=15 format=3 uid="uid://druw08x8dywk5"]
+
+[ext_resource type="Texture2D" uid="uid://dht2ub5evbcvu" path="res://Smoke30Frames_0.png" id="1_ec0cx"]
+[ext_resource type="Script" path="res://enemy.gd" id="1_fcd8s"]
+[ext_resource type="PackedScene" uid="uid://bon1v2rnevql4" path="res://explosion.tscn" id="2_ofhgm"]
+[ext_resource type="PackedScene" uid="uid://84vyok50qyag" path="res://missile.tscn" id="3_pdlgy"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s7fpv"]
+albedo_color = Color(1, 0, 0.0156863, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_1e5qf"]
+material = SubResource("StandardMaterial3D_s7fpv")
+radius = 0.02
+height = 0.08
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ivxid"]
+radius = 0.01
+height = 0.08
+
+[sub_resource type="Gradient" id="Gradient_glvye"]
+offsets = PackedFloat32Array(0.0894309, 0.186992, 0.276423, 0.422764, 0.577236, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.190917, 0.0711, 0.79, 1, 1, 1, 1, 1, 0.966667, 1, 0, 1, 1, 0, 0, 1, 0.0819172, 0.0148148, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_juev5"]
+gradient = SubResource("Gradient_glvye")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_2osey"]
+emission_shape = 1
+emission_sphere_radius = 0.02
+direction = Vector3(0, -1, 0)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.3
+initial_velocity_max = 0.5
+angular_velocity_min = -20.0
+angular_velocity_max = 20.0
+angle_min = -720.0
+angle_max = 720.0
+color_ramp = SubResource("GradientTexture1D_juev5")
+anim_speed_min = 1.0
+anim_speed_max = 1.0
+anim_offset_max = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4pya2"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+blend_mode = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_ec0cx")
+billboard_mode = 3
+particles_anim_h_frames = 6
+particles_anim_v_frames = 5
+particles_anim_loop = true
+grow_amount = -0.752
+
+[sub_resource type="QuadMesh" id="QuadMesh_gqrta"]
+material = SubResource("StandardMaterial3D_4pya2")
+size = Vector2(0.05, 0.05)
+
+[sub_resource type="SphereMesh" id="SphereMesh_bb5dj"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ruqyy"]
+radius = 0.0290031
+height = 0.0850159
+
+[node name="Enemy" type="CharacterBody3D" groups=["shootable"]]
+script = ExtResource("1_fcd8s")
+explosion = ExtResource("2_ofhgm")
+missile = ExtResource("3_pdlgy")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_1e5qf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_ivxid")
+
+[node name="forward_node" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="nozzle" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+amount = 200
+lifetime = 0.2
+randomness = 1.0
+local_coords = true
+draw_order = 3
+trail_lifetime = 0.01
+process_material = SubResource("ParticleProcessMaterial_2osey")
+draw_pass_1 = SubResource("QuadMesh_gqrta")
+
+[node name="nozzle_light" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.08, 0)
+light_energy = 0.192
+distance_fade_begin = 0.2
+distance_fade_length = 0.6
+omni_range = 0.2
+omni_attenuation = -1.0
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.670664, 0)
+visible = false
+mesh = SubResource("SphereMesh_bb5dj")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("CapsuleShape3D_ruqyy")
+
+[node name="Timer" type="Timer" parent="."]
+
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

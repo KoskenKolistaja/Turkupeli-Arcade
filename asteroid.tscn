@@ -1,0 +1,78 @@
+[gd_scene load_steps=12 format=3 uid="uid://dhp57wb67alqr"]
+
+[ext_resource type="Script" path="res://asteroid.gd" id="1_olkal"]
+[ext_resource type="ArrayMesh" uid="uid://duorb7v2tn1r4" path="res://meshes/asteroid_1.obj" id="2_frgiy"]
+[ext_resource type="Texture2D" uid="uid://dht2ub5evbcvu" path="res://Smoke30Frames_0.png" id="2_fvvru"]
+[ext_resource type="PackedScene" uid="uid://bon1v2rnevql4" path="res://explosion.tscn" id="2_m8cun"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_xkhj7"]
+radius = 0.05
+
+[sub_resource type="Gradient" id="Gradient_ffy88"]
+offsets = PackedFloat32Array(0, 0.569106, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.230315, 0.230315, 0.230315, 0.691057, 0.111197, 0.111197, 0.111197, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_m53p1"]
+gradient = SubResource("Gradient_ffy88")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_u8310"]
+emission_shape = 1
+emission_sphere_radius = 0.02
+direction = Vector3(0, 0, 0)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+angular_velocity_min = -20.0
+angular_velocity_max = 20.0
+angle_min = -720.0
+angle_max = 720.0
+color_ramp = SubResource("GradientTexture1D_m53p1")
+anim_speed_min = 1.0
+anim_speed_max = 1.0
+anim_offset_max = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u3gpp"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+blend_mode = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("2_fvvru")
+billboard_mode = 3
+particles_anim_h_frames = 6
+particles_anim_v_frames = 5
+particles_anim_loop = true
+grow_amount = -0.752
+
+[sub_resource type="QuadMesh" id="QuadMesh_sdk31"]
+material = SubResource("StandardMaterial3D_u3gpp")
+size = Vector2(0.05, 0.05)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_p4djb"]
+radius = 0.052
+
+[node name="Asteroid" type="CharacterBody3D" groups=["shootable"]]
+script = ExtResource("1_olkal")
+explosion = ExtResource("2_m8cun")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.01, -0.0265186, -0.0164093, 0)
+mesh = ExtResource("2_frgiy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_xkhj7")
+
+[node name="nozzle" type="GPUParticles3D" parent="."]
+amount = 200
+randomness = 1.0
+draw_order = 3
+trail_lifetime = 0.01
+process_material = SubResource("ParticleProcessMaterial_u8310")
+draw_pass_1 = SubResource("QuadMesh_sdk31")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("SphereShape3D_p4djb")
+
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]

@@ -1,0 +1,125 @@
+[gd_scene load_steps=18 format=3 uid="uid://behoow788x33n"]
+
+[ext_resource type="Script" path="res://Main.gd" id="1_356hf"]
+[ext_resource type="PackedScene" uid="uid://dahsidi3vy241" path="res://planet.tscn" id="1_iuiiy"]
+[ext_resource type="PackedScene" uid="uid://d3ydkhh5y4um0" path="res://sun.tscn" id="1_ysp64"]
+[ext_resource type="Texture2D" uid="uid://ck6nyhejnvma4" path="res://8k_stars_milky_way.jpg" id="2_fn0lw"]
+[ext_resource type="PackedScene" uid="uid://dbsduev6ntdno" path="res://spaceship.tscn" id="3_vnlbx"]
+[ext_resource type="PackedScene" uid="uid://dhp57wb67alqr" path="res://asteroid.tscn" id="5_exq23"]
+[ext_resource type="PackedScene" uid="uid://owm586kahwn7" path="res://moon.tscn" id="5_w6n63"]
+[ext_resource type="PackedScene" uid="uid://84vyok50qyag" path="res://missile.tscn" id="7_jifdc"]
+[ext_resource type="PackedScene" uid="uid://bon1v2rnevql4" path="res://explosion.tscn" id="8_6t6pp"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_bacr1"]
+panorama = ExtResource("2_fn0lw")
+
+[sub_resource type="Sky" id="Sky_joxko"]
+sky_material = SubResource("PanoramaSkyMaterial_bacr1")
+
+[sub_resource type="Environment" id="Environment_y6n5e"]
+background_mode = 2
+sky = SubResource("Sky_joxko")
+ambient_light_source = 2
+ambient_light_color = Color(0.368627, 0.368627, 0.368627, 1)
+ambient_light_energy = 0.33
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_3mcx0"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_wiaho"]
+size = Vector2(2, 0.1)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_1g70e"]
+plane = Plane(0, -1, 0, 0)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_54e73"]
+plane = Plane(1, 0, 0, 0)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_o8jbm"]
+plane = Plane(-1, 0, 0, 0)
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_356hf")
+asteroid = ExtResource("5_exq23")
+
+[node name="Sun" parent="." instance=ExtResource("1_ysp64")]
+
+[node name="Planet" parent="." groups=["Planet"] instance=ExtResource("1_iuiiy")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_y6n5e")
+
+[node name="Spaceship" parent="." instance=ExtResource("3_vnlbx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.458554, 0.47668, 0)
+
+[node name="StaticBodybottom" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.83, 0)
+visible = false
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBodybottom"]
+shape = SubResource("WorldBoundaryShape3D_3mcx0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBodybottom"]
+mesh = SubResource("PlaneMesh_wiaho")
+
+[node name="StaticBodytop" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.805, 0)
+visible = false
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBodytop"]
+shape = SubResource("WorldBoundaryShape3D_1g70e")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBodytop"]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0)
+mesh = SubResource("PlaneMesh_wiaho")
+
+[node name="StaticBodyright" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.455, 0, 0)
+visible = false
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBodyright"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.415, 0)
+shape = SubResource("WorldBoundaryShape3D_54e73")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBodyright"]
+transform = Transform3D(4.37114e-08, 1, -8.74228e-08, 1, -4.37114e-08, 0, -3.82137e-15, -8.74228e-08, -1, 0, 0, 0)
+mesh = SubResource("PlaneMesh_wiaho")
+
+[node name="StaticBodyleft" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.355, 0, 0)
+visible = false
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBodyleft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.415, 0)
+shape = SubResource("WorldBoundaryShape3D_o8jbm")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBodyleft"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("PlaneMesh_wiaho")
+
+[node name="Moon" parent="." instance=ExtResource("5_w6n63")]
+
+[node name="Missile" parent="." instance=ExtResource("7_jifdc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+
+[node name="Asteroid" parent="." instance=ExtResource("5_exq23")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+
+[node name="explosion" parent="." instance=ExtResource("8_6t6pp")]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -1.49344, 1.04716, 0)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, -5)
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 20.0
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

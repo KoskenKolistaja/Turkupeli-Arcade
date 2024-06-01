@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cfy1and5sa0dq"
+path="res://.godot/imported/blaster.mp3-b31e0016381bb50416b4c0e04a03c786.mp3str"
+
+[deps]
+
+source_file="res://Avaruuspeli sfx/blaster.mp3"
+dest_files=["res://.godot/imported/blaster.mp3-b31e0016381bb50416b4c0e04a03c786.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

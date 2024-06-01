@@ -1,0 +1,88 @@
+[gd_scene load_steps=9 format=3 uid="uid://owm586kahwn7"]
+
+[ext_resource type="Script" path="res://moon.gd" id="1_2hvgg"]
+[ext_resource type="Texture2D" uid="uid://cy70pf5p2jnbb" path="res://lroc_color_poles_8k.jpg" id="1_ah0hx"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_giuuw"]
+albedo_texture = ExtResource("1_ah0hx")
+
+[sub_resource type="SphereMesh" id="SphereMesh_qp50s"]
+material = SubResource("StandardMaterial3D_giuuw")
+radius = 0.1
+height = 0.2
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_o0ltu"]
+radius = 0.1
+
+[sub_resource type="Animation" id="Animation_10hvt"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_v5kwk"]
+resource_name = "rotate_earth"
+length = 20.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 5, 10, 15, 20),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 2, 0), Vector3(2, 0, 0), Vector3(0, -2, 0), Vector3(-2, 0, 0), Vector3(0, 2, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_fj0cu"]
+_data = {
+"RESET": SubResource("Animation_10hvt"),
+"rotate_earth": SubResource("Animation_v5kwk")
+}
+
+[node name="Moon" type="CharacterBody3D" groups=["planet"]]
+script = ExtResource("1_2hvgg")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_qp50s")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_o0ltu")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_fj0cu")
+}
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ProgressBar" type="ProgressBar" parent="CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -23.0
+offset_top = -13.0
+offset_right = 23.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

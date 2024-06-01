@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dqf0xlx35f3fy"
+path="res://.godot/imported/Suomihävittäjä.mp3-f8ae86c89f5b8e7b9098be4b9dc8d139.mp3str"
+
+[deps]
+
+source_file="res://Avaruuspeli sfx/Suomihävittäjä.mp3"
+dest_files=["res://.godot/imported/Suomihävittäjä.mp3-f8ae86c89f5b8e7b9098be4b9dc8d139.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

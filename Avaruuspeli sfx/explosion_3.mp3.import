@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dy1mx77m0lwxp"
+path="res://.godot/imported/explosion_3.mp3-e9d090eb3ae7dfbc04669dadf211a8ea.mp3str"
+
+[deps]
+
+source_file="res://Avaruuspeli sfx/explosion_3.mp3"
+dest_files=["res://.godot/imported/explosion_3.mp3-e9d090eb3ae7dfbc04669dadf211a8ea.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

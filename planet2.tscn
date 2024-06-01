@@ -1,0 +1,42 @@
+[gd_scene load_steps=6 format=3 uid="uid://d2ihr6d8jxkt2"]
+
+[ext_resource type="Script" path="res://planet.gd" id="1_hvitt"]
+[ext_resource type="Texture2D" uid="uid://re83qy0la2pc" path="res://2k_earth_daymap.jpg" id="1_wbmlb"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j73xu"]
+albedo_texture = ExtResource("1_wbmlb")
+
+[sub_resource type="SphereMesh" id="SphereMesh_w2hn6"]
+material = SubResource("StandardMaterial3D_j73xu")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_5laqa"]
+
+[node name="planet" type="StaticBody3D" groups=["earth", "planet"]]
+script = ExtResource("1_hvitt")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_w2hn6")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_5laqa")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ProgressBar" type="ProgressBar" parent="CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -51.5
+offset_top = -13.5
+offset_right = 51.5
+offset_bottom = 13.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

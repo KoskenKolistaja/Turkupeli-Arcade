@@ -1,0 +1,123 @@
+[gd_scene load_steps=17 format=3 uid="uid://b33vqrup0rtc3"]
+
+[ext_resource type="Script" path="res://Main.gd" id="1_ehmt5"]
+[ext_resource type="Texture2D" uid="uid://ck6nyhejnvma4" path="res://8k_stars_milky_way.jpg" id="1_j67ls"]
+[ext_resource type="PackedScene" uid="uid://dhp57wb67alqr" path="res://asteroid.tscn" id="2_mac1c"]
+[ext_resource type="PackedScene" uid="uid://d3ydkhh5y4um0" path="res://sun.tscn" id="2_s3be1"]
+[ext_resource type="PackedScene" uid="uid://owm586kahwn7" path="res://moon.tscn" id="3_bdm0a"]
+[ext_resource type="PackedScene" uid="uid://d2ihr6d8jxkt2" path="res://planet2.tscn" id="4_o8bah"]
+[ext_resource type="PackedScene" uid="uid://dbsduev6ntdno" path="res://spaceship.tscn" id="6_lpfby"]
+[ext_resource type="AudioStream" uid="uid://7oj2km7cmp4r" path="res://music/Uncharted.mp3" id="8_jbpsv"]
+[ext_resource type="PackedScene" uid="uid://druw08x8dywk5" path="res://enemy.tscn" id="9_0ly6f"]
+[ext_resource type="AudioStream" uid="uid://dmva8qdwn5070" path="res://music/Martian Offense.mp3" id="10_3h8vn"]
+[ext_resource type="AudioStream" uid="uid://dqf0xlx35f3fy" path="res://Avaruuspeli sfx/Suomihävittäjä.mp3" id="10_eh3qd"]
+[ext_resource type="AudioStream" uid="uid://h1yv3cf3r8ck" path="res://music/Stellar Solitude.mp3" id="11_s0p0u"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_3lven"]
+panorama = ExtResource("1_j67ls")
+
+[sub_resource type="Sky" id="Sky_gfc6p"]
+sky_material = SubResource("PanoramaSkyMaterial_3lven")
+
+[sub_resource type="Environment" id="Environment_dov3w"]
+background_mode = 2
+sky = SubResource("Sky_gfc6p")
+
+[sub_resource type="LabelSettings" id="LabelSettings_bx7ji"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_ehmt5")
+asteroid = ExtResource("2_mac1c")
+enemy = ExtResource("9_0ly6f")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_dov3w")
+
+[node name="Sun" parent="." instance=ExtResource("2_s3be1")]
+transform = Transform3D(-0.866023, 0, 0.500003, 0, 1, 0, -0.500003, 0, -0.866023, -0.125852, 0, -0.0750496)
+
+[node name="Moon" parent="." instance=ExtResource("3_bdm0a")]
+
+[node name="Camera3D" type="Camera3D" parent="." groups=["camera"]]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, -5)
+current = true
+
+[node name="planet" parent="." instance=ExtResource("4_o8bah")]
+
+[node name="Spaceship" parent="." instance=ExtResource("6_lpfby")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.738, 0, 0)
+
+[node name="Spaceship2" parent="." instance=ExtResource("6_lpfby")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15241, 0, 0)
+player_id = 2
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_jbpsv")
+volume_db = -6.0
+autoplay = true
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("10_3h8vn")
+volume_db = -9.0
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("11_s0p0u")
+volume_db = -6.0
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 10.0
+autostart = true
+
+[node name="enemy_timer" type="Timer" parent="."]
+wait_time = 15.0
+
+[node name="game_over" type="VBoxContainer" parent="."]
+visible = false
+offset_left = 530.0
+offset_top = 311.0
+offset_right = 570.0
+offset_bottom = 351.0
+
+[node name="Label" type="Label" parent="game_over"]
+layout_mode = 2
+text = "GAME OVER"
+label_settings = SubResource("LabelSettings_bx7ji")
+
+[node name="Button" type="Button" parent="game_over"]
+layout_mode = 2
+text = "RESTART"
+
+[node name="game_over_timer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="game_timer" type="Timer" parent="."]
+wait_time = 30.0
+autostart = true
+
+[node name="score" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+
+[node name="Enemy" parent="." instance=ExtResource("9_0ly6f")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.902, 0, 0)
+
+[node name="matrix1" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("10_eh3qd")
+volume_db = -11.243
+autoplay = true
+
+[connection signal="finished" from="AudioStreamPlayer" to="." method="_on_audio_stream_player_finished"]
+[connection signal="finished" from="AudioStreamPlayer2" to="." method="_on_audio_stream_player_2_finished"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="enemy_timer" to="." method="_on_enemy_timer_timeout"]
+[connection signal="pressed" from="game_over/Button" to="." method="_on_button_pressed"]
+[connection signal="timeout" from="game_over_timer" to="." method="_on_game_over_timer_timeout"]
+[connection signal="timeout" from="game_timer" to="." method="_on_game_timer_timeout"]

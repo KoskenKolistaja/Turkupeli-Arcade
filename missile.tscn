@@ -1,0 +1,101 @@
+[gd_scene load_steps=12 format=3 uid="uid://84vyok50qyag"]
+
+[ext_resource type="Script" path="res://missile.gd" id="1_o4ylv"]
+[ext_resource type="PackedScene" uid="uid://bon1v2rnevql4" path="res://explosion.tscn" id="2_n1qya"]
+[ext_resource type="AudioStream" uid="uid://djm21nkgfj4mc" path="res://Avaruuspeli sfx/missile_flight.mp3" id="2_r6s61"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_wjma5"]
+radius = 0.01
+height = 0.05
+
+[sub_resource type="Gradient" id="Gradient_lt5pq"]
+offsets = PackedFloat32Array(0.0894309, 0.186992, 0.276423, 0.422764, 0.577236, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.190917, 0.0711, 0.79, 1, 1, 1, 1, 1, 0.966667, 1, 0, 1, 1, 0, 0, 1, 0.0819172, 0.0148148, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_lc21i"]
+gradient = SubResource("Gradient_lt5pq")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_6qd8n"]
+emission_shape = 1
+emission_sphere_radius = 0.02
+direction = Vector3(0, -1, 0)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.3
+initial_velocity_max = 0.5
+angular_velocity_min = -20.0
+angular_velocity_max = 20.0
+angle_min = -720.0
+angle_max = 720.0
+color_ramp = SubResource("GradientTexture1D_lc21i")
+anim_speed_min = 1.0
+anim_speed_max = 1.0
+anim_offset_max = 1.0
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_v4rd2"]
+load_path = "res://.godot/imported/Smoke30Frames_0.png-2148996194711aa3e9898eb2aca611dd.s3tc.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_log4k"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+blend_mode = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = SubResource("CompressedTexture2D_v4rd2")
+billboard_mode = 3
+particles_anim_h_frames = 6
+particles_anim_v_frames = 5
+particles_anim_loop = true
+grow_amount = -0.752
+
+[sub_resource type="QuadMesh" id="QuadMesh_8ktkb"]
+material = SubResource("StandardMaterial3D_log4k")
+size = Vector2(0.05, 0.05)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_peb23"]
+radius = 0.02
+
+[node name="Missile" type="Area3D" groups=["missile"]]
+script = ExtResource("1_o4ylv")
+explosion = ExtResource("2_n1qya")
+
+[node name="mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_wjma5")
+
+[node name="forward_node" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="nozzle" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0289562, 0)
+emitting = false
+amount = 200
+lifetime = 0.2
+randomness = 1.0
+local_coords = true
+draw_order = 3
+trail_lifetime = 0.01
+process_material = SubResource("ParticleProcessMaterial_6qd8n")
+draw_pass_1 = SubResource("QuadMesh_8ktkb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.005, 0)
+shape = SubResource("SphereShape3D_peb23")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.3
+one_shot = true
+autostart = true
+
+[node name="flight" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_r6s61")
+volume_db = -15.0
+
+[node name="death_timer" type="Timer" parent="."]
+wait_time = 10.0
+one_shot = true
+autostart = true
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="death_timer" to="." method="_on_death_timer_timeout"]

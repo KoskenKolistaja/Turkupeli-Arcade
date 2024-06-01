@@ -1,0 +1,145 @@
+[gd_scene load_steps=18 format=3 uid="uid://dbsduev6ntdno"]
+
+[ext_resource type="Script" path="res://spaceship.gd" id="1_qjjis"]
+[ext_resource type="Texture2D" uid="uid://dht2ub5evbcvu" path="res://Smoke30Frames_0.png" id="2_unmr0"]
+[ext_resource type="PackedScene" uid="uid://bjnyyx7wbymim" path="res://bullet.tscn" id="3_8ruy6"]
+[ext_resource type="PackedScene" uid="uid://84vyok50qyag" path="res://missile.tscn" id="3_y7ffm"]
+[ext_resource type="AudioStream" uid="uid://djm21nkgfj4mc" path="res://Avaruuspeli sfx/missile_flight.mp3" id="4_hwn7k"]
+[ext_resource type="Texture2D" uid="uid://hspb7hrpyruw" path="res://reticle_white.png" id="5_x44tt"]
+[ext_resource type="AudioStream" uid="uid://bb72r7703nvus" path="res://Avaruuspeli sfx/beep.mp3" id="6_d22ji"]
+[ext_resource type="AudioStream" uid="uid://cfy1and5sa0dq" path="res://Avaruuspeli sfx/blaster.mp3" id="8_qmwrt"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_u62r8"]
+radius = 0.02
+height = 0.08
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_oe26n"]
+radius = 0.01
+height = 0.08
+
+[sub_resource type="Gradient" id="Gradient_6xfw3"]
+offsets = PackedFloat32Array(0.0894309, 0.186992, 0.276423, 0.422764, 0.577236, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.190917, 0.0711, 0.79, 1, 1, 1, 1, 1, 0.966667, 1, 0, 1, 1, 0, 0, 1, 0.0819172, 0.0148148, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_b6yow"]
+gradient = SubResource("Gradient_6xfw3")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_mac6i"]
+emission_shape = 1
+emission_sphere_radius = 0.02
+direction = Vector3(0, -1, 0)
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.3
+initial_velocity_max = 0.5
+angular_velocity_min = -20.0
+angular_velocity_max = 20.0
+angle_min = -720.0
+angle_max = 720.0
+color_ramp = SubResource("GradientTexture1D_b6yow")
+anim_speed_min = 1.0
+anim_speed_max = 1.0
+anim_offset_max = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j4e1l"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+blend_mode = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("2_unmr0")
+billboard_mode = 3
+particles_anim_h_frames = 6
+particles_anim_v_frames = 5
+particles_anim_loop = true
+grow_amount = -0.752
+
+[sub_resource type="QuadMesh" id="QuadMesh_k1kkv"]
+material = SubResource("StandardMaterial3D_j4e1l")
+size = Vector2(0.05, 0.05)
+
+[sub_resource type="SphereMesh" id="SphereMesh_nthy0"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_jr4hm"]
+height = 12.0
+
+[node name="Spaceship" type="CharacterBody3D" groups=["player"]]
+script = ExtResource("1_qjjis")
+missile = ExtResource("3_y7ffm")
+bullet = ExtResource("3_8ruy6")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_u62r8")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_oe26n")
+
+[node name="forward_node" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="nozzle" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+amount = 200
+lifetime = 0.2
+randomness = 1.0
+local_coords = true
+draw_order = 3
+trail_lifetime = 0.01
+process_material = SubResource("ParticleProcessMaterial_mac6i")
+draw_pass_1 = SubResource("QuadMesh_k1kkv")
+
+[node name="nozzle_light" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.08, 0)
+light_energy = 0.192
+distance_fade_begin = 0.2
+distance_fade_length = 0.6
+omni_range = 0.2
+omni_attenuation = -1.0
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.670664, 0)
+visible = false
+mesh = SubResource("SphereMesh_nthy0")
+
+[node name="flight_sound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_hwn7k")
+volume_db = -60.0
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, -5)
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+
+[node name="Reticle" type="Sprite2D" parent="."]
+visible = false
+modulate = Color(0, 1, 0, 1)
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("5_x44tt")
+
+[node name="beep_sound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_d22ji")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.00048, 0)
+shape = SubResource("CapsuleShape3D_jr4hm")
+
+[node name="target_timer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="bullet_timer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="bullet_sound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_qmwrt")
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_exited" from="Area3D" to="." method="_on_area_3d_body_exited"]
+[connection signal="timeout" from="target_timer" to="." method="_on_target_timer_timeout"]
+[connection signal="timeout" from="bullet_timer" to="." method="_on_bullet_timer_timeout"]
