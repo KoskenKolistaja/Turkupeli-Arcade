@@ -92,6 +92,7 @@ func _on_timer_timeout():
 	$nozzle.emitting = true
 	$flight.play()
 	$flight.pitch_scale += randf_range(-0.4,0.0)
+	$CollisionShape3D.disabled = false
 
 
 func _on_death_timer_timeout():

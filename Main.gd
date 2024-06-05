@@ -101,6 +101,9 @@ func _on_game_timer_timeout():
 
 func _on_audio_stream_player_finished():
 	$AudioStreamPlayer2.play()
+	
+	for i in 10:
+		spawn_enemy()
 
 
 func _on_audio_stream_player_2_finished():
