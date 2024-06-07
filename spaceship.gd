@@ -2,8 +2,8 @@ extends CharacterBody3D
 
 #var speed = Vector3.ZERO
 
-const ACCELERATION = 0.1
-const GRAVITY_STRENGTH = 0.03
+const ACCELERATION = 0.01
+const GRAVITY_STRENGTH = 0.003
 
 var planet
 
@@ -111,7 +111,7 @@ func _physics_process(delta):
 	velocity += gravity_direction * GRAVITY_STRENGTH
 	
 	
-	move_and_collide(velocity*0.0005)
+	move_and_slide()
 
 func spawn_bullet():
 	print("juu")

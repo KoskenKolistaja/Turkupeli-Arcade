@@ -8,7 +8,7 @@ extends CharacterBody3D
 @export var explosion: PackedScene
 @export var missile: PackedScene
 
-const GRAVITY_STRENGTH = 0.01
+const GRAVITY_STRENGTH = 0.01 
 const RAY_LENGTH = 1000
 
 var missile_cooldown = false

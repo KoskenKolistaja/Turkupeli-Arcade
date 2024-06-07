@@ -50,6 +50,7 @@ func check_game_over():
 
 func game_over():
 	$game_over.show()
+	$game_over/Button.grab_focus()     
 	dead = true
 	$AudioStreamPlayer.stop()
 	$AudioStreamPlayer2.stop()
@@ -100,6 +101,9 @@ func _on_game_timer_timeout():
 
 func _on_audio_stream_player_finished():
 	$AudioStreamPlayer2.play()
+	
+	for i in 10:
+		spawn_enemy()
 
 
 func _on_audio_stream_player_2_finished():
